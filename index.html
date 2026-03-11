@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGUS</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c0f;--surface:#111318;--surface2:#181c22;--border:#252a33;--border-bright:#3a4150;--text:#dde3ec;--text-muted:#6b7585;--text-dim:#3d4555;--accent:#4af0c4;--accent-dim:rgba(74,240,196,0.12);--accent-mid:rgba(74,240,196,0.4);--warn:#f0a44a;--danger:#f06060;--mono:'DM Mono',monospace;--serif:'Fraunces',Georgia,serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;width:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(74,240,196,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(74,240,196,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.screen{display:none;position:relative;z-index:1;}
+.screen.active{display:flex;}
+#login-screen{height:100vh;width:100vw;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;overflow-y:auto;}
+.login-box{width:100%;max-width:420px;border:1px solid var(--border-bright);background:var(--surface);padding:48px 40px;position:relative;animation:fadeUp .5s ease both;}
+.login-box::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+.study-badge{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:8px;}
+.study-badge::before{content:'';width:20px;height:1px;background:var(--accent);}
+.login-title{font-family:var(--serif);font-size:26px;font-weight:300;line-height:1.25;margin-bottom:8px;}
+.login-title em{font-style:italic;color:var(--accent);}
+.login-subtitle{color:var(--text-muted);font-size:12px;line-height:1.6;margin-bottom:32px;}
+.field-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;display:block;}
+.field-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:14px;padding:12px 16px;outline:none;transition:border-color .2s;margin-bottom:24px;}
+.field-input:focus{border-color:var(--accent);}
+.btn-primary{width:100%;background:var(--accent);color:#000;border:none;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:14px 24px;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:#fff;transform:translateY(-1px);}
+.login-error{color:var(--danger);font-size:11px;margin-top:12px;display:none;}
+.login-meta{margin-top:28px;padding-top:22px;border-top:1px solid var(--border);color:var(--text-dim);font-size:11px;line-height:1.7;}
+#study-screen{height:100vh;width:100vw;flex-direction:column;overflow:hidden;}
+.study-header{display:flex;align-items:center;justify-content:space-between;padding:11px 22px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;gap:14px;flex-wrap:wrap;}
+.header-left{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.header-logo{font-family:var(--serif);font-size:14px;font-weight:300;white-space:nowrap;}
+.header-logo span{color:var(--accent);font-style:italic;}
+.header-divider{width:1px;height:18px;background:var(--border-bright);}
+.header-reader{font-size:11px;color:var(--text-muted);white-space:nowrap;}
+.header-reader strong{color:var(--accent);font-weight:500;}
+.progress-section{flex:1;min-width:130px;max-width:250px;}
+.progress-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:5px;}
+.progress-track{height:3px;background:var(--border);overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);transition:width .4s ease;}
+.header-right{display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.btn-hdr{background:transparent;border:1px solid var(--border-bright);color:var(--text-muted);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-hdr:hover{border-color:var(--accent);color:var(--accent);}
+.btn-hdr-exit:hover{border-color:var(--danger)!important;color:var(--danger)!important;}
+.study-body{flex:1;display:grid;grid-template-columns:1fr 355px;min-height:0;overflow:hidden;}
+.image-panel{background:#060809;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-right:1px solid var(--border);}
+.image-panel::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.6) 100%);pointer-events:none;}
+.case-image{max-width:90%;max-height:90%;object-fit:contain;display:block;border:1px solid var(--border);transform-origin:center;}
+.image-placeholder{display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--text-dim);}
+.image-placeholder svg{opacity:.3;}
+.image-placeholder p{font-size:11px;letter-spacing:.1em;text-transform:uppercase;}
+.case-overlay{position:absolute;top:14px;left:14px;z-index:5;background:rgba(10,12,15,.88);border:1px solid var(--border);padding:7px 13px;backdrop-filter:blur(4px);}
+.case-overlay-id{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);}
+.case-overlay-num{font-size:17px;font-family:var(--serif);font-weight:300;line-height:1.2;}
+.zoom-controls{position:absolute;bottom:14px;left:14px;z-index:5;display:flex;gap:4px;}
+.zoom-btn{width:29px;height:29px;background:rgba(10,12,15,.88);border:1px solid var(--border);color:var(--text-muted);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;backdrop-filter:blur(4px);}
+.zoom-btn:hover{border-color:var(--accent);color:var(--accent);}
+.grading-panel{background:var(--surface);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;}
+.g-section{padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sec-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:9px;}
+.grading-title{font-family:var(--serif);font-size:18px;font-weight:300;line-height:1.3;margin-bottom:5px;}
+.grading-instr{font-size:11px;color:var(--text-muted);line-height:1.6;}
+.resp-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border:1px solid;margin-top:10px;}
+.resp-status.recorded{color:var(--accent);border-color:var(--accent-mid);background:var(--accent-dim);}
+.resp-status.recorded::before{content:'checkmark ';}
+.resp-status.not-rec{color:var(--text-dim);border-color:var(--border);}
+.likelihood-section{padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.lh-value-row{display:flex;align-items:baseline;gap:4px;margin-bottom:14px;}
+.lh-number{font-family:var(--serif);font-size:50px;font-weight:300;line-height:1;transition:color .3s;min-width:72px;}
+.lh-pct{font-size:17px;color:var(--text-muted);}
+.lh-label{font-size:11px;color:var(--text-muted);margin-left:auto;text-align:right;transition:color .3s;}
+.slider-wrap{position:relative;margin-bottom:4px;}
+.slider-track{height:6px;background:var(--surface2);border:1px solid var(--border);position:relative;}
+.slider-fill{height:100%;position:absolute;left:0;top:0;transition:width .04s,background .3s;pointer-events:none;}
+input[type=range].risk-slider{-webkit-appearance:none;appearance:none;position:absolute;top:50%;left:0;transform:translateY(-50%);width:100%;height:22px;background:transparent;margin:0;cursor:grab;outline:none;}
+input[type=range].risk-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--text);border:2px solid var(--bg);border-radius:0;box-shadow:0 0 0 1px var(--border-bright),0 2px 8px rgba(0,0,0,.5);transition:background .2s;cursor:grab;}
+input[type=range].risk-slider::-webkit-slider-thumb:hover{background:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 12px var(--accent-mid);}
+input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;background:var(--text);border:2px solid var(--bg);border-radius:0;}
+.slider-ticks{position:relative;height:8px;margin-bottom:4px;}
+.slider-ticks span{position:absolute;width:1px;height:100%;background:var(--border);transform:translateX(-50%);}
+.slider-ticks span.major{background:var(--border-bright);}
+.slider-scale{display:flex;justify-content:space-between;margin-top:5px;}
+.slider-scale span{font-size:9px;color:var(--text-dim);}
+
+
+
+
+
+
+.notes-section{padding:14px 22px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.notes-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:9px 13px;resize:vertical;min-height:58px;outline:none;line-height:1.6;}
+.notes-input:focus{border-color:var(--accent-mid);}
+.notes-input::placeholder{color:var(--text-dim);}
+.nav-section{padding:14px 22px;display:flex;gap:7px;flex-shrink:0;margin-top:auto;}
+.btn-nav{flex:1;background:transparent;border:1px solid var(--border-bright);color:var(--text-muted);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:11px 6px;cursor:pointer;transition:all .2s;}
+.btn-nav:hover:not(:disabled){border-color:var(--text-muted);color:var(--text);}
+.btn-nav:disabled{opacity:.25;cursor:not-allowed;}
+.btn-submit{flex:2;background:var(--accent);border:none;color:#000;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:11px 6px;cursor:pointer;transition:all .2s;}
+.btn-submit:hover{background:#fff;}
+.btn-submit.graded{background:var(--accent-dim);border:1px solid var(--accent-mid);color:var(--accent);}
+#complete-screen{height:100vh;width:100vw;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;overflow-y:auto;}
+.complete-box{max-width:500px;width:100%;text-align:center;animation:fadeUp .5s ease both;}
+.complete-icon{width:54px;height:54px;border:1px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--accent);font-size:22px;animation:pulse-glow 2s ease-in-out infinite;}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 0 0 var(--accent-dim);}50%{box-shadow:0 0 0 12px transparent;}}
+.complete-title{font-family:var(--serif);font-size:30px;font-weight:300;margin-bottom:10px;}
+.complete-title em{font-style:italic;color:var(--accent);}
+.complete-sub{color:var(--text-muted);font-size:12px;line-height:1.7;margin-bottom:24px;}
+.complete-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:22px;}
+.stat-cell{background:var(--surface);padding:16px;}
+.stat-value{font-family:var(--serif);font-size:26px;font-weight:300;color:var(--accent);}
+.stat-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+.btn-download{display:inline-flex;align-items:center;gap:10px;background:var(--accent);border:none;color:#000;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:13px 26px;cursor:pointer;transition:all .2s;}
+.btn-download:hover{background:#fff;transform:translateY(-2px);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.modal-overlay.active{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border-bright);max-width:420px;width:90%;padding:34px 30px;position:relative;animation:fadeUp .2s ease both;}
+.modal-box::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--warn),transparent);}
+.modal-box.danger-modal::before{background:linear-gradient(90deg,transparent,var(--danger),transparent);}
+.modal-icon{font-size:22px;margin-bottom:14px;}
+.modal-title{font-family:var(--serif);font-size:19px;font-weight:300;margin-bottom:9px;}
+.modal-body{font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:26px;}
+.modal-actions{display:flex;gap:9px;}
+.btn-m-cancel{flex:1;background:transparent;border:1px solid var(--border-bright);color:var(--text-muted);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:11px;cursor:pointer;transition:all .2s;}
+.btn-m-cancel:hover{border-color:var(--text-muted);color:var(--text);}
+.btn-m-confirm{flex:1;background:var(--accent);border:none;color:#000;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:11px;cursor:pointer;transition:all .2s;}
+.btn-m-confirm:hover{background:#fff;}
+.btn-m-danger{background:var(--danger);color:#fff;}
+.btn-m-danger:hover{background:#ff8888!important;}
+.save-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:18px;backdrop-filter:blur(4px);}
+.save-overlay.active{display:flex;}
+.save-title{font-family:var(--serif);font-size:17px;font-weight:300;letter-spacing:.04em;}
+.save-track{width:260px;height:4px;background:var(--border);border:1px solid var(--border-bright);overflow:hidden;}
+.save-bar{height:100%;background:var(--accent);width:0%;box-shadow:0 0 8px var(--accent-mid);transition:width .05s linear;}
+.save-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border-bright);color:var(--text);font-size:11px;padding:9px 18px;letter-spacing:.05em;transition:transform .3s ease;z-index:100;pointer-events:none;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border-bright);}
+@media(max-width:680px){.study-body{grid-template-columns:1fr;grid-template-rows:1fr auto;}.image-panel{min-height:38vh;}.grading-panel{max-height:62vh;}}
+
+/* AI Toggle */
+.ai-toggle-wrap{position:absolute;bottom:14px;right:14px;z-index:5;}
+.ai-toggle-btn{display:flex;align-items:center;gap:8px;background:rgba(10,12,15,.88);border:1px solid var(--border-bright);color:var(--text-muted);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px);}
+.ai-toggle-btn:hover{border-color:var(--accent);color:var(--accent);}
+.ai-toggle-btn.ai-active{border-color:var(--orange);color:var(--orange);background:rgba(240,164,74,0.1);}
+.ai-toggle-btn.ai-active .toggle-dot{background:var(--orange);box-shadow:0 0 6px var(--orange);}
+.toggle-dot{width:8px;height:8px;border-radius:50%;background:var(--border-bright);transition:all .3s;flex-shrink:0;}
+.ai-mode-label{position:absolute;top:14px;right:14px;z-index:5;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;border:1px solid;backdrop-filter:blur(4px);display:none;}
+.ai-mode-label.visible{display:block;}
+.ai-mode-label.standard{color:var(--text-muted);border-color:var(--border);background:rgba(10,12,15,.88);}
+.ai-mode-label.ai-on{color:var(--orange);border-color:var(--orange);background:rgba(240,164,74,0.1);}
+
+/* Likert scales */
+.likert-section{padding:16px 22px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.likert-item{margin-bottom:16px;}
+.likert-item:last-child{margin-bottom:0;}
+.likert-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.likert-label span{font-size:9px;color:var(--text-dim);}
+.likert-anchors{display:flex;justify-content:space-between;font-size:9px;color:var(--text-dim);margin-bottom:5px;}
+.likert-options{display:flex;gap:5px;}
+.likert-option{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;}
+.likert-option input[type=radio]{display:none;}
+.likert-btn{width:100%;padding:8px 4px;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);font-family:var(--mono);font-size:11px;text-align:center;cursor:pointer;transition:all .2s;border-radius:0;}
+.likert-option input:checked + .likert-btn{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.likert-btn:hover{border-color:var(--border-bright);color:var(--text);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen" class="screen active">
+  <div class="login-box">
+    <div class="study-badge">Reader Study &middot; Ophthalmology</div>
+    <h1 class="login-title"><em>ARGUS</em></h1>
+    <p class="login-subtitle">A reader study evaluating the likelihood of glaucomatous visual field defect (GVFD) from optical coherence tomography (OCT)-based reports. Each case presents one image for independent assessment. Please use your allocated reader ID / username.</p>
+    <label class="field-label" for="reader-id">Reader ID / Username</label>
+    <input class="field-input" type="text" id="reader-id" placeholder="e.g. DR_SMITH or R04" autocomplete="off">
+    <button class="btn-primary" onclick="startStudy()">Begin Study &rarr;</button>
+    <div class="login-error" id="login-error">Please enter a valid Reader ID to continue.</div>
+    <div class="login-meta">
+      Responses are stored in your browser session. Use <strong>Save</strong> at any time to download a CSV backup. This study contains <strong id="case-count-display">0</strong> cases.<br><br>Contact: Dr YSB (<a href="/cdn-cgi/l/email-protection#e48189858d88a4819c8589948881ca878b89" style="color:var(--accent);text-decoration:none"><span class="__cf_email__" data-cfemail="32575f535b5e72574a535f425e571c515d5f">[email&#160;protected]</span></a>)
+    </div>
+  </div>
+</div>
+
+<!-- STUDY -->
+<div id="study-screen" class="screen">
+  <div class="study-header">
+    <div class="header-left">
+      <div class="header-logo">ARGUS <span>Reader Study</span></div>
+      <div class="header-divider"></div>
+      <div class="header-reader">Reader: <strong id="header-reader-id">--</strong></div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-labels">
+        <span id="progress-label">Case 1 of 0</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn-hdr" onclick="triggerSave()">Save</button>
+      <button class="btn-hdr" onclick="exportCSV(false)">Export CSV</button>
+      <button class="btn-hdr btn-hdr-exit" onclick="triggerExit()">Exit</button>
+    </div>
+  </div>
+
+  <div class="study-body">
+    <div class="image-panel">
+      <div class="case-overlay">
+        <div class="case-overlay-id">Case ID</div>
+        <div class="case-overlay-num" id="overlay-case-id">--</div>
+      </div>
+
+      <div class="ai-mode-label standard" id="ai-mode-label">Standard</div>
+      <div class="ai-toggle-wrap">
+        <button class="ai-toggle-btn" id="ai-toggle-btn" onclick="toggleAI()">
+          <span class="toggle-dot" id="toggle-dot"></span>
+          <span id="ai-toggle-text">Standard View</span>
+        </button>
+      </div>
+      <div class="zoom-controls">
+        <button class="zoom-btn" onclick="adjustZoom(.2)">+</button>
+        <button class="zoom-btn" onclick="adjustZoom(-.2)">-</button>
+        <button class="zoom-btn" onclick="resetZoom()" style="font-size:11px">Reset</button>
+      </div>
+      <img class="case-image" id="case-image" src="" alt="Fundus" style="display:none">
+      <div class="image-placeholder" id="image-placeholder">
+        <svg width="64" height="64" viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="35" stroke="currentColor" stroke-width="1"/>
+          <circle cx="36" cy="36" r="20" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3"/>
+          <circle cx="36" cy="36" r="6" fill="currentColor" opacity=".4"/>
+          <line x1="36" y1="1" x2="36" y2="12" stroke="currentColor" stroke-width="1"/>
+          <line x1="36" y1="60" x2="36" y2="71" stroke="currentColor" stroke-width="1"/>
+          <line x1="1" y1="36" x2="12" y2="36" stroke="currentColor" stroke-width="1"/>
+          <line x1="60" y1="36" x2="71" y2="36" stroke="currentColor" stroke-width="1"/>
+        </svg>
+        <p>No image loaded</p>
+        <p style="font-size:10px;color:var(--text-dim)">Add image URLs to the CASES array in the script</p>
+      </div>
+    </div>
+
+    <div class="grading-panel">
+      <div class="g-section">
+        <div class="sec-label">Task</div>
+        <div class="grading-title">Likelihood of Glaucomatous Visual Field Defect</div>
+        <div class="grading-instr">Rate the likelihood of a glaucomatous visual field defect from 0% (definitely absent) to 100% (definitely present), in 5% increments.</div>
+        <div class="resp-status not-rec" id="resp-status">No response recorded</div>
+      </div>
+
+      <div class="likelihood-section">
+        <div class="sec-label">Likelihood Score</div>
+        <div class="lh-value-row">
+          <div class="lh-number" id="lh-display">50</div>
+          <div class="lh-pct">%</div>
+          <div class="lh-label" id="lh-label">Uncertain</div>
+        </div>
+        <div class="slider-wrap">
+          <div class="slider-track">
+            <div class="slider-fill" id="slider-fill" style="width:50%;background:#6b7585"></div>
+            <input type="range" class="risk-slider" id="risk-slider" min="0" max="100" step="5" value="50" oninput="updateSlider(this.value)">
+          </div>
+        </div>
+        <div class="slider-ticks" id="slider-ticks"></div>
+        <div class="slider-scale">
+          <span>0 - Definitely absent</span>
+          <span>50 - Uncertain</span>
+          <span>100 - Definite</span>
+        </div>
+      </div>
+
+      <div class="likert-section">
+        <div class="sec-label">AI Assessment</div>
+        <div class="likert-item">
+          <div class="likert-label">Acceptance of AI <span id="acceptance-val">—</span></div>
+          <div class="likert-anchors"><span>Not at all</span><span>Completely</span></div>
+          <div class="likert-options" id="likert-acceptance">
+            <label class="likert-option"><input type="radio" name="acceptance" value="1" onchange="onLikertChange('acceptance',1)"><div class="likert-btn">1</div></label>
+            <label class="likert-option"><input type="radio" name="acceptance" value="2" onchange="onLikertChange('acceptance',2)"><div class="likert-btn">2</div></label>
+            <label class="likert-option"><input type="radio" name="acceptance" value="3" onchange="onLikertChange('acceptance',3)"><div class="likert-btn">3</div></label>
+            <label class="likert-option"><input type="radio" name="acceptance" value="4" onchange="onLikertChange('acceptance',4)"><div class="likert-btn">4</div></label>
+            <label class="likert-option"><input type="radio" name="acceptance" value="5" onchange="onLikertChange('acceptance',5)"><div class="likert-btn">5</div></label>
+          </div>
+        </div>
+        <div class="likert-item">
+          <div class="likert-label">Trust of AI <span id="trust-val">—</span></div>
+          <div class="likert-anchors"><span>Not at all</span><span>Completely</span></div>
+          <div class="likert-options" id="likert-trust">
+            <label class="likert-option"><input type="radio" name="trust" value="1" onchange="onLikertChange('trust',1)"><div class="likert-btn">1</div></label>
+            <label class="likert-option"><input type="radio" name="trust" value="2" onchange="onLikertChange('trust',2)"><div class="likert-btn">2</div></label>
+            <label class="likert-option"><input type="radio" name="trust" value="3" onchange="onLikertChange('trust',3)"><div class="likert-btn">3</div></label>
+            <label class="likert-option"><input type="radio" name="trust" value="4" onchange="onLikertChange('trust',4)"><div class="likert-btn">4</div></label>
+            <label class="likert-option"><input type="radio" name="trust" value="5" onchange="onLikertChange('trust',5)"><div class="likert-btn">5</div></label>
+          </div>
+        </div>
+      </div>
+      <div class="notes-section">
+        <div class="sec-label">Feedback (optional)</div>
+        <textarea class="notes-input" id="notes-input" ></textarea>
+      </div>
+
+      <div class="nav-section">
+        <button class="btn-nav" id="btn-prev" onclick="navigate(-1)" disabled>&larr; Back</button>
+        <button class="btn-submit" id="btn-submit" onclick="attemptSubmit()">Record Response</button>
+        <button class="btn-nav" id="btn-next" onclick="navigate(1)" disabled>Next &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETE -->
+<div id="complete-screen" class="screen">
+  <div class="complete-box">
+    <div class="complete-icon">&#10003;</div>
+    <h2 class="complete-title">Study <em>Complete</em></h2>
+    <p class="complete-sub">All cases have been assessed. Thank you for your participation. Download your responses as a CSV and submit to the study coordinator.</p>
+    <div class="complete-stats">
+      <div class="stat-cell"><div class="stat-value" id="stat-cases">0</div><div class="stat-label">Cases Graded</div></div>
+      <div class="stat-cell"><div class="stat-value" id="stat-mean">0%</div><div class="stat-label">Mean Score</div></div>
+      <div class="stat-cell"><div class="stat-value" id="stat-high">0</div><div class="stat-label">High Risk</div></div>
+    </div>
+    <button class="btn-download" onclick="exportCSV(false)">Download CSV Report</button>
+  </div>
+</div>
+
+<!-- MODAL: Overwrite -->
+<div class="modal-overlay" id="modal-overwrite">
+  <div class="modal-box">
+    <div class="modal-icon">&#9888;</div>
+    <div class="modal-title">Response Already Recorded</div>
+    <div class="modal-body">You have already recorded a prior response for this report. Would you like to overwrite it with your current score?</div>
+    <div class="modal-actions">
+      <button class="btn-m-cancel" onclick="closeModal('modal-overwrite')">No</button>
+      <button class="btn-m-confirm" onclick="confirmOverwrite()">Yes, happy to proceed</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Exit -->
+<div class="modal-overlay" id="modal-exit">
+  <div class="modal-box danger-modal">
+    <div class="modal-icon">&#128682;</div>
+    <div class="modal-title">Exit Study</div>
+    <div class="modal-body">You are about to exit. Any unsaved responses will be lost unless you save first. Would you like to save your progress before exiting?</div>
+    <div class="modal-actions">
+      <button class="btn-m-cancel btn-m-danger" onclick="exitWithoutSave()">Exit Without Saving</button>
+      <button class="btn-m-confirm" onclick="saveAndExit()">Save &amp; Exit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save progress overlay -->
+<div class="save-overlay" id="save-overlay">
+  <div class="save-title">Saving responses...</div>
+  <div class="save-track"><div class="save-bar" id="save-bar"></div></div>
+  <div class="save-label" id="save-label">0%</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const CASES = [
+  { id: "CASE_001", imageUrl: "images/CASE_001.jpg", aiImageUrl: "images_ai/CASE_001.jpg", label: "" },
+  { id: "CASE_002", imageUrl: "images/CASE_002.jpg", aiImageUrl: "images_ai/CASE_002.jpg", label: "" },
+  { id: "CASE_003", imageUrl: "images/CASE_003.jpg", aiImageUrl: "images_ai/CASE_003.jpg", label: "" },
+  { id: "CASE_004", imageUrl: "images/CASE_004.jpg", aiImageUrl: "images_ai/CASE_004.jpg", label: "" },
+  { id: "CASE_005", imageUrl: "images/CASE_005.jpg", aiImageUrl: "images_ai/CASE_005.jpg", label: "" },
+  { id: "CASE_006", imageUrl: "images/CASE_006.jpg", aiImageUrl: "images_ai/CASE_006.jpg", label: "" },
+  { id: "CASE_007", imageUrl: "images/CASE_007.jpg", aiImageUrl: "images_ai/CASE_007.jpg", label: "" },
+  { id: "CASE_008", imageUrl: "images/CASE_008.jpg", aiImageUrl: "images_ai/CASE_008.jpg", label: "" },
+  { id: "CASE_009", imageUrl: "images/CASE_009.jpg", aiImageUrl: "images_ai/CASE_009.jpg", label: "" },
+  { id: "CASE_010", imageUrl: "images/CASE_010.jpg", aiImageUrl: "images_ai/CASE_010.jpg", label: "" },
+  { id: "CASE_011", imageUrl: "images/CASE_011.jpg", aiImageUrl: "images_ai/CASE_011.jpg", label: "" },
+  { id: "CASE_012", imageUrl: "images/CASE_012.jpg", aiImageUrl: "images_ai/CASE_012.jpg", label: "" },
+  { id: "CASE_013", imageUrl: "images/CASE_013.jpg", aiImageUrl: "images_ai/CASE_013.jpg", label: "" },
+  { id: "CASE_014", imageUrl: "images/CASE_014.jpg", aiImageUrl: "images_ai/CASE_014.jpg", label: "" },
+  { id: "CASE_015", imageUrl: "images/CASE_015.jpg", aiImageUrl: "images_ai/CASE_015.jpg", label: "" },
+  { id: "CASE_016", imageUrl: "images/CASE_016.jpg", aiImageUrl: "images_ai/CASE_016.jpg", label: "" },
+  { id: "CASE_017", imageUrl: "images/CASE_017.jpg", aiImageUrl: "images_ai/CASE_017.jpg", label: "" },
+  { id: "CASE_018", imageUrl: "images/CASE_018.jpg", aiImageUrl: "images_ai/CASE_018.jpg", label: "" },
+  { id: "CASE_019", imageUrl: "images/CASE_019.jpg", aiImageUrl: "images_ai/CASE_019.jpg", label: "" },
+  { id: "CASE_020", imageUrl: "images/CASE_020.jpg", aiImageUrl: "images_ai/CASE_020.jpg", label: "" },
+  { id: "CASE_021", imageUrl: "images/CASE_021.jpg", aiImageUrl: "images_ai/CASE_021.jpg", label: "" },
+  { id: "CASE_022", imageUrl: "images/CASE_022.jpg", aiImageUrl: "images_ai/CASE_022.jpg", label: "" },
+  { id: "CASE_023", imageUrl: "images/CASE_023.jpg", aiImageUrl: "images_ai/CASE_023.jpg", label: "" },
+  { id: "CASE_024", imageUrl: "images/CASE_024.jpg", aiImageUrl: "images_ai/CASE_024.jpg", label: "" },
+  { id: "CASE_025", imageUrl: "images/CASE_025.jpg", aiImageUrl: "images_ai/CASE_025.jpg", label: "" },
+  { id: "CASE_026", imageUrl: "images/CASE_026.jpg", aiImageUrl: "images_ai/CASE_026.jpg", label: "" },
+  { id: "CASE_027", imageUrl: "images/CASE_027.jpg", aiImageUrl: "images_ai/CASE_027.jpg", label: "" },
+  { id: "CASE_028", imageUrl: "images/CASE_028.jpg", aiImageUrl: "images_ai/CASE_028.jpg", label: "" },
+  { id: "CASE_029", imageUrl: "images/CASE_029.jpg", aiImageUrl: "images_ai/CASE_029.jpg", label: "" },
+  { id: "CASE_030", imageUrl: "images/CASE_030.jpg", aiImageUrl: "images_ai/CASE_030.jpg", label: "" },
+  { id: "CASE_031", imageUrl: "images/CASE_031.jpg", aiImageUrl: "images_ai/CASE_031.jpg", label: "" },
+  { id: "CASE_032", imageUrl: "images/CASE_032.jpg", aiImageUrl: "images_ai/CASE_032.jpg", label: "" },
+  { id: "CASE_033", imageUrl: "images/CASE_033.jpg", aiImageUrl: "images_ai/CASE_033.jpg", label: "" },
+  { id: "CASE_034", imageUrl: "images/CASE_034.jpg", aiImageUrl: "images_ai/CASE_034.jpg", label: "" },
+  { id: "CASE_035", imageUrl: "images/CASE_035.jpg", aiImageUrl: "images_ai/CASE_035.jpg", label: "" },
+  { id: "CASE_036", imageUrl: "images/CASE_036.jpg", aiImageUrl: "images_ai/CASE_036.jpg", label: "" },
+  { id: "CASE_037", imageUrl: "images/CASE_037.jpg", aiImageUrl: "images_ai/CASE_037.jpg", label: "" },
+  { id: "CASE_038", imageUrl: "images/CASE_038.jpg", aiImageUrl: "images_ai/CASE_038.jpg", label: "" },
+  { id: "CASE_039", imageUrl: "images/CASE_039.jpg", aiImageUrl: "images_ai/CASE_039.jpg", label: "" },
+  { id: "CASE_040", imageUrl: "images/CASE_040.jpg", aiImageUrl: "images_ai/CASE_040.jpg", label: "" },
+  { id: "CASE_041", imageUrl: "images/CASE_041.jpg", aiImageUrl: "images_ai/CASE_041.jpg", label: "" },
+  { id: "CASE_042", imageUrl: "images/CASE_042.jpg", aiImageUrl: "images_ai/CASE_042.jpg", label: "" },
+  { id: "CASE_043", imageUrl: "images/CASE_043.jpg", aiImageUrl: "images_ai/CASE_043.jpg", label: "" },
+  { id: "CASE_044", imageUrl: "images/CASE_044.jpg", aiImageUrl: "images_ai/CASE_044.jpg", label: "" },
+  { id: "CASE_045", imageUrl: "images/CASE_045.jpg", aiImageUrl: "images_ai/CASE_045.jpg", label: "" },
+  { id: "CASE_046", imageUrl: "images/CASE_046.jpg", aiImageUrl: "images_ai/CASE_046.jpg", label: "" },
+  { id: "CASE_047", imageUrl: "images/CASE_047.jpg", aiImageUrl: "images_ai/CASE_047.jpg", label: "" }
+];
+
+let currentIndex = 0, readerId = '', responses = {}, zoomLevel = 1, pendingGrade = null;
+let aiMode = false;
+let eventLog = [];
+let toggleLog = []; // per-case toggle timestamps
+
+function ts(){ return new Date().toISOString(); }
+
+function logEvent(type, detail){
+  eventLog.push({ time: ts(), type: type, case: CASES[currentIndex] ? CASES[currentIndex].id : '', detail: detail });
+}
+
+document.getElementById('case-count-display').textContent = CASES.length;
+buildTicks();
+document.getElementById('reader-id').addEventListener('keydown', function(e){ if(e.key==='Enter') startStudy(); });
+
+function buildTicks(){
+  var c=document.getElementById('slider-ticks');
+  for(var i=0;i<=20;i++){
+    var t=document.createElement('span');
+    t.style.left=(i*5)+'%';
+    if(i%5===0) t.classList.add('major');
+    c.appendChild(t);
+  }
+}
+
+function startStudy(){
+  var v=document.getElementById('reader-id').value.trim();
+  if(!v){document.getElementById('login-error').style.display='block';return;}
+  readerId=v.toUpperCase();
+  document.getElementById('header-reader-id').textContent=readerId;
+  logEvent('STUDY_START','Reader: '+readerId);
+  showScreen('study-screen');
+  loadCase(0);
+}
+
+function toggleAI(){
+  aiMode = !aiMode;
+  var c = CASES[currentIndex];
+  var img = document.getElementById('case-image');
+  var btn = document.getElementById('ai-toggle-btn');
+  var dot = document.getElementById('toggle-dot');
+  var txt = document.getElementById('ai-toggle-text');
+  var lbl = document.getElementById('ai-mode-label');
+
+  if(aiMode){
+    img.src = c.aiImageUrl;
+    btn.classList.add('ai-active');
+    txt.textContent = 'AI View';
+    lbl.className = 'ai-mode-label visible ai-on';
+    lbl.textContent = 'AI Assist ON';
+  } else {
+    img.src = c.imageUrl;
+    btn.classList.remove('ai-active');
+    txt.textContent = 'Standard View';
+    lbl.className = 'ai-mode-label visible standard';
+    lbl.textContent = 'Standard';
+  }
+  var toggleEntry = ts()+' (' + (aiMode?'Standard→AI':'AI→Standard') + ')';
+  toggleLog.push(toggleEntry);
+  logEvent('AI_TOGGLE', aiMode ? 'ON' : 'OFF');
+}
+
+function loadCase(idx){
+  currentIndex=idx;
+  var c=CASES[idx];
+  document.getElementById('overlay-case-id').textContent=c.id;
+
+  // Reset AI mode on new case
+  aiMode = false;
+  toggleLog = [];
+  var btn = document.getElementById('ai-toggle-btn');
+  btn.classList.remove('ai-active');
+  document.getElementById('ai-toggle-text').textContent = 'Standard View';
+  var lbl = document.getElementById('ai-mode-label');
+  lbl.className = 'ai-mode-label standard';
+  lbl.textContent = 'Standard';
+
+  var img=document.getElementById('case-image'), ph=document.getElementById('image-placeholder');
+  if(c.imageUrl){
+    img.src=c.imageUrl;
+    img.style.display='block';ph.style.display='none';zoomLevel=1;img.style.transform='scale(1)';
+  } else {
+    img.style.display='none';ph.style.display='flex';
+  }
+
+  var saved=responses[c.id];
+  var sv=saved?saved.score:50;
+  document.getElementById('risk-slider').value=sv;
+  document.getElementById('notes-input').value=saved?(saved.notes||''):'';
+  updateSlider(sv);
+  setRespStatus(!!saved);
+
+  // Restore Likerts
+  restoreLikerts(saved);
+
+  var btn2=document.getElementById('btn-submit');
+  if(saved){btn2.classList.add('graded');btn2.textContent='Update Response';}
+  else{btn2.classList.remove('graded');btn2.textContent='Record Response';}
+
+  updateProgress();
+  document.getElementById('btn-prev').disabled=(idx===0);
+  document.getElementById('btn-next').disabled=(idx>=CASES.length-1||!responses[c.id]);
+
+  logEvent('CASE_LOAD', c.id);
+}
+
+function restoreLikerts(saved){
+  // Clear all radio buttons
+  document.querySelectorAll('input[name=acceptance]').forEach(function(r){r.checked=false;});
+  document.querySelectorAll('input[name=trust]').forEach(function(r){r.checked=false;});
+  document.getElementById('acceptance-val').textContent='—';
+  document.getElementById('trust-val').textContent='—';
+
+  if(saved){
+    if(saved.acceptance){
+      var r=document.querySelector('input[name=acceptance][value="'+saved.acceptance+'"]');
+      if(r) r.checked=true;
+      document.getElementById('acceptance-val').textContent=saved.acceptance+'/5';
+    }
+    if(saved.trust){
+      var r2=document.querySelector('input[name=trust][value="'+saved.trust+'"]');
+      if(r2) r2.checked=true;
+      document.getElementById('trust-val').textContent=saved.trust+'/5';
+    }
+  }
+}
+
+function onLikertChange(scale, val){
+  if(scale==='acceptance'){
+    document.getElementById('acceptance-val').textContent=val+'/5';
+  } else {
+    document.getElementById('trust-val').textContent=val+'/5';
+  }
+  logEvent('LIKERT_'+scale.toUpperCase(), val);
+}
+
+function navigate(dir){
+  var ni=currentIndex+dir;
+  if(ni>=0&&ni<CASES.length){
+    logEvent('NAVIGATE', dir>0?'NEXT':'PREV');
+    loadCase(ni);
+  }
+}
+
+function setRespStatus(rec){
+  var el=document.getElementById('resp-status');
+  if(rec){el.className='resp-status recorded';el.textContent='Response recorded';}
+  else{el.className='resp-status not-rec';el.textContent='No response recorded';}
+}
+
+function updateSlider(val){
+  val=Math.round(parseInt(val)/5)*5;
+  document.getElementById('lh-display').textContent=val;
+  document.getElementById('slider-fill').style.width=val+'%';
+  var color,label;
+  if(val<=45){color='#4af09a';label=val===0?'Definitely absent':val<=10?'Very unlikely':'Low likelihood';}
+  else if(val<=69){color='#f0a44a';label=val===50?'Uncertain':val<50?'Leaning absent':'Leaning present';}
+  else{color='#f06060';label=val>=90?'Definite defect':'High likelihood';}
+  document.getElementById('slider-fill').style.background=color;
+  document.getElementById('lh-display').style.color=color;
+  document.getElementById('lh-label').textContent=label;
+  document.getElementById('lh-label').style.color=color;
+}
+
+function attemptSubmit(){
+  var c=CASES[currentIndex];
+  var score=Math.round(parseInt(document.getElementById('risk-slider').value)/5)*5;
+  var notes=document.getElementById('notes-input').value.trim();
+  var acceptance=document.querySelector('input[name=acceptance]:checked');
+  var trust=document.querySelector('input[name=trust]:checked');
+
+  if(responses[c.id]){
+    pendingGrade={caseId:c.id,score:score,notes:notes,
+      acceptance:acceptance?parseInt(acceptance.value):null,
+      trust:trust?parseInt(trust.value):null};
+    openModal('modal-overwrite');
+  } else {
+    commitGrade(c.id,score,notes,
+      acceptance?parseInt(acceptance.value):null,
+      trust?parseInt(trust.value):null);
+  }
+}
+
+function confirmOverwrite(){
+  closeModal('modal-overwrite');
+  if(pendingGrade){
+    commitGrade(pendingGrade.caseId,pendingGrade.score,pendingGrade.notes,pendingGrade.acceptance,pendingGrade.trust);
+    pendingGrade=null;
+  }
+}
+
+function commitGrade(caseId,score,notes,acceptance,trust){
+  responses[caseId]={
+    score:score, notes:notes,
+    acceptance:acceptance, trust:trust,
+    aiModeAtSubmit: aiMode,
+    toggleHistory: toggleLog.slice(),
+    toggleCount: toggleLog.length,
+    timestamp:ts()
+  };
+  logEvent('RESPONSE_RECORDED','score:'+score+' acceptance:'+acceptance+' trust:'+trust+' aiMode:'+aiMode);
+  setRespStatus(true);
+  var btn=document.getElementById('btn-submit');
+  btn.classList.add('graded');btn.textContent='Update Response';
+  if(currentIndex<CASES.length-1) document.getElementById('btn-next').disabled=false;
+  updateProgress();
+  var done=Object.keys(responses).length;
+  if(done===CASES.length){showToast('All cases assessed - study complete!');setTimeout(showCompleteScreen,1200);}
+  else if(currentIndex<CASES.length-1){showToast('Response recorded - advancing...');setTimeout(function(){navigate(1);},600);}
+  else{showToast('Response recorded');}
+}
+
+function updateProgress(){
+  var total=CASES.length,graded=Object.keys(responses).length,pct=Math.round((graded/total)*100);
+  document.getElementById('progress-label').textContent='Case '+(currentIndex+1)+' of '+total+' | '+graded+'/'+total+' recorded';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-fill').style.width=pct+'%';
+}
+
+function adjustZoom(d){zoomLevel=Math.max(.5,Math.min(3,zoomLevel+d));document.getElementById('case-image').style.transform='scale('+zoomLevel+')';}
+function resetZoom(){zoomLevel=1;document.getElementById('case-image').style.transform='scale(1)';}
+
+function triggerSave(cb){
+  var overlay=document.getElementById('save-overlay'),bar=document.getElementById('save-bar'),lbl=document.getElementById('save-label');
+  overlay.classList.add('active');bar.style.width='0%';lbl.textContent='0%';
+  var pct=0;
+  var iv=setInterval(function(){
+    pct+=Math.random()*18+8;
+    if(pct>=100){
+      pct=100;clearInterval(iv);bar.style.width='100%';lbl.textContent='100%';
+      setTimeout(function(){overlay.classList.remove('active');exportCSV(true);showToast('Responses saved successfully');if(cb)cb();},400);
+    } else {bar.style.width=pct+'%';lbl.textContent=Math.round(pct)+'%';}
+  },80);
+}
+
+function triggerExit(){openModal('modal-exit');}
+function exitWithoutSave(){closeModal('modal-exit');setTimeout(function(){window.close();showScreen('login-screen');responses={};readerId='';showToast('Session ended');},200);}
+function saveAndExit(){closeModal('modal-exit');triggerSave(function(){setTimeout(function(){window.close();showScreen('login-screen');responses={};readerId='';showToast('Saved - you may close this tab');},600);});}
+
+function showCompleteScreen(){
+  var scores=Object.values(responses).map(function(r){return r.score;});
+  var mean=scores.length?Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length):0;
+  document.getElementById('stat-cases').textContent=scores.length;
+  document.getElementById('stat-mean').textContent=mean+'%';
+  document.getElementById('stat-high').textContent=scores.filter(function(s){return s>66;}).length;
+  showScreen('complete-screen');
+}
+
+function exportCSV(silent){
+  // Response rows
+  var rows=[
+    ['Study','ARGUS Reader Study'],
+    ['Reader ID',readerId],
+    ['Export Date',ts()],
+    ['Total Cases',CASES.length],
+    ['Cases Assessed',Object.keys(responses).length],
+    [],
+    ['Case ID','Likelihood Score (%)','Risk Category','Acceptance of AI (1-5)','Trust of AI (1-5)','AI Mode at Submit','Toggle Count','Toggle History','Feedback','Timestamp']
+  ];
+  CASES.forEach(function(c){
+    var r=responses[c.id];
+    if(r){
+      var cat=r.score<=45?'Low':r.score<=69?'Moderate':'High';
+      rows.push([c.id,r.score,cat,r.acceptance||'',r.trust||'',r.aiModeAtSubmit?'AI':'Standard',r.toggleCount||0,(r.toggleHistory||[]).join(' | '),r.notes||'',r.timestamp]);
+    } else {
+      rows.push([c.id,'NOT ASSESSED','','','','','','','','']);
+    }
+  });
+
+  // Event log rows
+  rows.push([]);
+  rows.push(['--- INTERACTION LOG ---']);
+  rows.push(['Timestamp','Event Type','Case','Detail']);
+  eventLog.forEach(function(e){
+    rows.push([e.time, e.type, e.case, e.detail]);
+  });
+
+  var csv=rows.map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='argus_study_'+readerId+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();URL.revokeObjectURL(url);
+  if(!silent)showToast('CSV downloaded');
+}
+
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
+var toastTimer;
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},2500);}
+</script>
+</body>
+</html>
