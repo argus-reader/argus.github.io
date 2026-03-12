@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ARGUS</title>
+<title>ARGUS Reader Study</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0c0f;--surface:#111318;--surface2:#181c22;--border:#252a33;--border-bright:#3a4150;--text:#dde3ec;--text-muted:#6b7585;--text-dim:#3d4555;--accent:#4af0c4;--accent-dim:rgba(74,240,196,0.12);--accent-mid:rgba(74,240,196,0.4);--warn:#f0a44a;--danger:#f06060;--mono:'DM Mono',monospace;--serif:'Fraunces',Georgia,serif;}
@@ -139,32 +139,6 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border-bright);}
 @media(max-width:680px){.study-body{grid-template-columns:1fr;grid-template-rows:1fr auto;}.image-panel{min-height:38vh;}.grading-panel{max-height:62vh;}}
-
-/* AI Toggle */
-.ai-toggle-wrap{position:absolute;bottom:14px;right:14px;z-index:5;}
-.ai-toggle-btn{display:flex;align-items:center;gap:8px;background:rgba(10,12,15,.88);border:1px solid var(--border-bright);color:var(--text-muted);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px);}
-.ai-toggle-btn:hover{border-color:var(--accent);color:var(--accent);}
-.ai-toggle-btn.ai-active{border-color:var(--orange);color:var(--orange);background:rgba(240,164,74,0.1);}
-.ai-toggle-btn.ai-active .toggle-dot{background:var(--orange);box-shadow:0 0 6px var(--orange);}
-.toggle-dot{width:8px;height:8px;border-radius:50%;background:var(--border-bright);transition:all .3s;flex-shrink:0;}
-.ai-mode-label{position:absolute;top:14px;right:14px;z-index:5;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;border:1px solid;backdrop-filter:blur(4px);display:none;}
-.ai-mode-label.visible{display:block;}
-.ai-mode-label.standard{color:var(--text-muted);border-color:var(--border);background:rgba(10,12,15,.88);}
-.ai-mode-label.ai-on{color:var(--orange);border-color:var(--orange);background:rgba(240,164,74,0.1);}
-
-/* Likert scales */
-.likert-section{padding:16px 22px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.likert-item{margin-bottom:16px;}
-.likert-item:last-child{margin-bottom:0;}
-.likert-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
-.likert-label span{font-size:9px;color:var(--text-dim);}
-.likert-anchors{display:flex;justify-content:space-between;font-size:9px;color:var(--text-dim);margin-bottom:5px;}
-.likert-options{display:flex;gap:5px;}
-.likert-option{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;}
-.likert-option input[type=radio]{display:none;}
-.likert-btn{width:100%;padding:8px 4px;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);font-family:var(--mono);font-size:11px;text-align:center;cursor:pointer;transition:all .2s;border-radius:0;}
-.likert-option input:checked + .likert-btn{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
-.likert-btn:hover{border-color:var(--border-bright);color:var(--text);}
 </style>
 </head>
 <body>
@@ -173,14 +147,14 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
 <div id="login-screen" class="screen active">
   <div class="login-box">
     <div class="study-badge">Reader Study &middot; Ophthalmology</div>
-    <h1 class="login-title"><em>ARGUS</em></h1>
+    <h1 class="login-title">Likelihood of<br>Glaucomatous<br><em>Visual Field Defect</em></h1>
     <p class="login-subtitle">A reader study evaluating the likelihood of glaucomatous visual field defect (GVFD) from optical coherence tomography (OCT)-based reports. Each case presents one image for independent assessment. Please use your allocated reader ID / username.</p>
     <label class="field-label" for="reader-id">Reader ID / Username</label>
     <input class="field-input" type="text" id="reader-id" placeholder="e.g. DR_SMITH or R04" autocomplete="off">
     <button class="btn-primary" onclick="startStudy()">Begin Study &rarr;</button>
     <div class="login-error" id="login-error">Please enter a valid Reader ID to continue.</div>
     <div class="login-meta">
-      Responses are stored in your browser session. Use <strong>Save</strong> at any time to download a CSV backup. This study contains <strong id="case-count-display">0</strong> cases.<br><br>Contact: Dr YSB (<a href="/cdn-cgi/l/email-protection#e48189858d88a4819c8589948881ca878b89" style="color:var(--accent);text-decoration:none"><span class="__cf_email__" data-cfemail="32575f535b5e72574a535f425e571c515d5f">[email&#160;protected]</span></a>)
+      Responses are stored in your browser session. Use <strong>Save</strong> at any time to download a CSV backup. This study contains <strong id="case-count-display">0</strong> cases.<br><br>Contact: Dr YSB (<a href="/cdn-cgi/l/email-protection#8ce9e1ede5e0cce9f4ede1fce0e9a2efe3e1" style="color:var(--accent);text-decoration:none"><span class="__cf_email__" data-cfemail="9cf9f1fdf5f0dcf9e4fdf1ecf0f9b2fff3f1">[email&#160;protected]</span></a>)
     </div>
   </div>
 </div>
@@ -214,14 +188,6 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
       <div class="case-overlay">
         <div class="case-overlay-id">Case ID</div>
         <div class="case-overlay-num" id="overlay-case-id">--</div>
-      </div>
-
-      <div class="ai-mode-label standard" id="ai-mode-label">Standard</div>
-      <div class="ai-toggle-wrap">
-        <button class="ai-toggle-btn" id="ai-toggle-btn" onclick="toggleAI()">
-          <span class="toggle-dot" id="toggle-dot"></span>
-          <span id="ai-toggle-text">Standard View</span>
-        </button>
       </div>
       <div class="zoom-controls">
         <button class="zoom-btn" onclick="adjustZoom(.2)">+</button>
@@ -273,31 +239,6 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
         </div>
       </div>
 
-      <div class="likert-section">
-        <div class="sec-label">AI Assessment</div>
-        <div class="likert-item">
-          <div class="likert-label">Acceptance of AI <span id="acceptance-val">—</span></div>
-          <div class="likert-anchors"><span>Not at all</span><span>Completely</span></div>
-          <div class="likert-options" id="likert-acceptance">
-            <label class="likert-option"><input type="radio" name="acceptance" value="1" onchange="onLikertChange('acceptance',1)"><div class="likert-btn">1</div></label>
-            <label class="likert-option"><input type="radio" name="acceptance" value="2" onchange="onLikertChange('acceptance',2)"><div class="likert-btn">2</div></label>
-            <label class="likert-option"><input type="radio" name="acceptance" value="3" onchange="onLikertChange('acceptance',3)"><div class="likert-btn">3</div></label>
-            <label class="likert-option"><input type="radio" name="acceptance" value="4" onchange="onLikertChange('acceptance',4)"><div class="likert-btn">4</div></label>
-            <label class="likert-option"><input type="radio" name="acceptance" value="5" onchange="onLikertChange('acceptance',5)"><div class="likert-btn">5</div></label>
-          </div>
-        </div>
-        <div class="likert-item">
-          <div class="likert-label">Trust of AI <span id="trust-val">—</span></div>
-          <div class="likert-anchors"><span>Not at all</span><span>Completely</span></div>
-          <div class="likert-options" id="likert-trust">
-            <label class="likert-option"><input type="radio" name="trust" value="1" onchange="onLikertChange('trust',1)"><div class="likert-btn">1</div></label>
-            <label class="likert-option"><input type="radio" name="trust" value="2" onchange="onLikertChange('trust',2)"><div class="likert-btn">2</div></label>
-            <label class="likert-option"><input type="radio" name="trust" value="3" onchange="onLikertChange('trust',3)"><div class="likert-btn">3</div></label>
-            <label class="likert-option"><input type="radio" name="trust" value="4" onchange="onLikertChange('trust',4)"><div class="likert-btn">4</div></label>
-            <label class="likert-option"><input type="radio" name="trust" value="5" onchange="onLikertChange('trust',5)"><div class="likert-btn">5</div></label>
-          </div>
-        </div>
-      </div>
       <div class="notes-section">
         <div class="sec-label">Feedback (optional)</div>
         <textarea class="notes-input" id="notes-input" ></textarea>
@@ -364,65 +305,56 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const CASES = [
-  { id: "CASE_001", imageUrl: "images/CASE_001.jpg", aiImageUrl: "images_ai/CASE_001.jpg", label: "" },
-  { id: "CASE_002", imageUrl: "images/CASE_002.jpg", aiImageUrl: "images_ai/CASE_002.jpg", label: "" },
-  { id: "CASE_003", imageUrl: "images/CASE_003.jpg", aiImageUrl: "images_ai/CASE_003.jpg", label: "" },
-  { id: "CASE_004", imageUrl: "images/CASE_004.jpg", aiImageUrl: "images_ai/CASE_004.jpg", label: "" },
-  { id: "CASE_005", imageUrl: "images/CASE_005.jpg", aiImageUrl: "images_ai/CASE_005.jpg", label: "" },
-  { id: "CASE_006", imageUrl: "images/CASE_006.jpg", aiImageUrl: "images_ai/CASE_006.jpg", label: "" },
-  { id: "CASE_007", imageUrl: "images/CASE_007.jpg", aiImageUrl: "images_ai/CASE_007.jpg", label: "" },
-  { id: "CASE_008", imageUrl: "images/CASE_008.jpg", aiImageUrl: "images_ai/CASE_008.jpg", label: "" },
-  { id: "CASE_009", imageUrl: "images/CASE_009.jpg", aiImageUrl: "images_ai/CASE_009.jpg", label: "" },
-  { id: "CASE_010", imageUrl: "images/CASE_010.jpg", aiImageUrl: "images_ai/CASE_010.jpg", label: "" },
-  { id: "CASE_011", imageUrl: "images/CASE_011.jpg", aiImageUrl: "images_ai/CASE_011.jpg", label: "" },
-  { id: "CASE_012", imageUrl: "images/CASE_012.jpg", aiImageUrl: "images_ai/CASE_012.jpg", label: "" },
-  { id: "CASE_013", imageUrl: "images/CASE_013.jpg", aiImageUrl: "images_ai/CASE_013.jpg", label: "" },
-  { id: "CASE_014", imageUrl: "images/CASE_014.jpg", aiImageUrl: "images_ai/CASE_014.jpg", label: "" },
-  { id: "CASE_015", imageUrl: "images/CASE_015.jpg", aiImageUrl: "images_ai/CASE_015.jpg", label: "" },
-  { id: "CASE_016", imageUrl: "images/CASE_016.jpg", aiImageUrl: "images_ai/CASE_016.jpg", label: "" },
-  { id: "CASE_017", imageUrl: "images/CASE_017.jpg", aiImageUrl: "images_ai/CASE_017.jpg", label: "" },
-  { id: "CASE_018", imageUrl: "images/CASE_018.jpg", aiImageUrl: "images_ai/CASE_018.jpg", label: "" },
-  { id: "CASE_019", imageUrl: "images/CASE_019.jpg", aiImageUrl: "images_ai/CASE_019.jpg", label: "" },
-  { id: "CASE_020", imageUrl: "images/CASE_020.jpg", aiImageUrl: "images_ai/CASE_020.jpg", label: "" },
-  { id: "CASE_021", imageUrl: "images/CASE_021.jpg", aiImageUrl: "images_ai/CASE_021.jpg", label: "" },
-  { id: "CASE_022", imageUrl: "images/CASE_022.jpg", aiImageUrl: "images_ai/CASE_022.jpg", label: "" },
-  { id: "CASE_023", imageUrl: "images/CASE_023.jpg", aiImageUrl: "images_ai/CASE_023.jpg", label: "" },
-  { id: "CASE_024", imageUrl: "images/CASE_024.jpg", aiImageUrl: "images_ai/CASE_024.jpg", label: "" },
-  { id: "CASE_025", imageUrl: "images/CASE_025.jpg", aiImageUrl: "images_ai/CASE_025.jpg", label: "" },
-  { id: "CASE_026", imageUrl: "images/CASE_026.jpg", aiImageUrl: "images_ai/CASE_026.jpg", label: "" },
-  { id: "CASE_027", imageUrl: "images/CASE_027.jpg", aiImageUrl: "images_ai/CASE_027.jpg", label: "" },
-  { id: "CASE_028", imageUrl: "images/CASE_028.jpg", aiImageUrl: "images_ai/CASE_028.jpg", label: "" },
-  { id: "CASE_029", imageUrl: "images/CASE_029.jpg", aiImageUrl: "images_ai/CASE_029.jpg", label: "" },
-  { id: "CASE_030", imageUrl: "images/CASE_030.jpg", aiImageUrl: "images_ai/CASE_030.jpg", label: "" },
-  { id: "CASE_031", imageUrl: "images/CASE_031.jpg", aiImageUrl: "images_ai/CASE_031.jpg", label: "" },
-  { id: "CASE_032", imageUrl: "images/CASE_032.jpg", aiImageUrl: "images_ai/CASE_032.jpg", label: "" },
-  { id: "CASE_033", imageUrl: "images/CASE_033.jpg", aiImageUrl: "images_ai/CASE_033.jpg", label: "" },
-  { id: "CASE_034", imageUrl: "images/CASE_034.jpg", aiImageUrl: "images_ai/CASE_034.jpg", label: "" },
-  { id: "CASE_035", imageUrl: "images/CASE_035.jpg", aiImageUrl: "images_ai/CASE_035.jpg", label: "" },
-  { id: "CASE_036", imageUrl: "images/CASE_036.jpg", aiImageUrl: "images_ai/CASE_036.jpg", label: "" },
-  { id: "CASE_037", imageUrl: "images/CASE_037.jpg", aiImageUrl: "images_ai/CASE_037.jpg", label: "" },
-  { id: "CASE_038", imageUrl: "images/CASE_038.jpg", aiImageUrl: "images_ai/CASE_038.jpg", label: "" },
-  { id: "CASE_039", imageUrl: "images/CASE_039.jpg", aiImageUrl: "images_ai/CASE_039.jpg", label: "" },
-  { id: "CASE_040", imageUrl: "images/CASE_040.jpg", aiImageUrl: "images_ai/CASE_040.jpg", label: "" },
-  { id: "CASE_041", imageUrl: "images/CASE_041.jpg", aiImageUrl: "images_ai/CASE_041.jpg", label: "" },
-  { id: "CASE_042", imageUrl: "images/CASE_042.jpg", aiImageUrl: "images_ai/CASE_042.jpg", label: "" },
-  { id: "CASE_043", imageUrl: "images/CASE_043.jpg", aiImageUrl: "images_ai/CASE_043.jpg", label: "" },
-  { id: "CASE_044", imageUrl: "images/CASE_044.jpg", aiImageUrl: "images_ai/CASE_044.jpg", label: "" },
-  { id: "CASE_045", imageUrl: "images/CASE_045.jpg", aiImageUrl: "images_ai/CASE_045.jpg", label: "" },
-  { id: "CASE_046", imageUrl: "images/CASE_046.jpg", aiImageUrl: "images_ai/CASE_046.jpg", label: "" },
-  { id: "CASE_047", imageUrl: "images/CASE_047.jpg", aiImageUrl: "images_ai/CASE_047.jpg", label: "" }
+  { id: "CASE_001", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_001.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_001.jpg", label: "" },
+  { id: "CASE_002", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_002.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_002.jpg", label: "" },
+  { id: "CASE_003", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_003.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_003.jpg", label: "" },
+  { id: "CASE_004", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_004.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_004.jpg", label: "" },
+  { id: "CASE_005", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_005.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_005.jpg", label: "" },
+  { id: "CASE_006", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_006.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_006.jpg", label: "" },
+  { id: "CASE_007", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_007.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_007.jpg", label: "" },
+  { id: "CASE_008", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_008.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_008.jpg", label: "" },
+  { id: "CASE_009", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_009.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_009.jpg", label: "" },
+  { id: "CASE_010", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_010.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_010.jpg", label: "" },
+  { id: "CASE_011", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_011.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_011.jpg", label: "" },
+  { id: "CASE_012", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_012.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_012.jpg", label: "" },
+  { id: "CASE_013", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_013.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_013.jpg", label: "" },
+  { id: "CASE_014", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_014.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_014.jpg", label: "" },
+  { id: "CASE_015", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_015.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_015.jpg", label: "" },
+  { id: "CASE_016", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_016.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_016.jpg", label: "" },
+  { id: "CASE_017", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_017.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_017.jpg", label: "" },
+  { id: "CASE_018", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_018.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_018.jpg", label: "" },
+  { id: "CASE_019", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_019.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_019.jpg", label: "" },
+  { id: "CASE_020", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_020.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_020.jpg", label: "" },
+  { id: "CASE_021", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_021.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_021.jpg", label: "" },
+  { id: "CASE_022", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_022.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_022.jpg", label: "" },
+  { id: "CASE_023", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_023.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_023.jpg", label: "" },
+  { id: "CASE_024", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_024.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_024.jpg", label: "" },
+  { id: "CASE_025", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_025.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_025.jpg", label: "" },
+  { id: "CASE_026", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_026.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_026.jpg", label: "" },
+  { id: "CASE_027", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_027.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_027.jpg", label: "" },
+  { id: "CASE_028", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_028.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_028.jpg", label: "" },
+  { id: "CASE_029", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_029.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_029.jpg", label: "" },
+  { id: "CASE_030", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_030.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_030.jpg", label: "" },
+  { id: "CASE_031", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_031.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_031.jpg", label: "" },
+  { id: "CASE_032", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_032.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_032.jpg", label: "" },
+  { id: "CASE_033", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_033.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_033.jpg", label: "" },
+  { id: "CASE_034", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_034.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_034.jpg", label: "" },
+  { id: "CASE_035", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_035.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_035.jpg", label: "" },
+  { id: "CASE_036", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_036.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_036.jpg", label: "" },
+  { id: "CASE_037", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_037.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_037.jpg", label: "" },
+  { id: "CASE_038", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_038.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_038.jpg", label: "" },
+  { id: "CASE_039", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_039.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_039.jpg", label: "" },
+  { id: "CASE_040", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_040.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_040.jpg", label: "" },
+  { id: "CASE_041", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_041.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_041.jpg", label: "" },
+  { id: "CASE_042", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_042.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_042.jpg", label: "" },
+  { id: "CASE_043", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_043.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_043.jpg", label: "" },
+  { id: "CASE_044", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_044.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_044.jpg", label: "" },
+  { id: "CASE_045", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_045.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_045.jpg", label: "" },
+  { id: "CASE_046", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_046.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_046.jpg", label: "" },
+  { id: "CASE_047", imageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images/CASE_047.jpg", aiImageUrl: "https://res.cloudinary.com/dfrfhqpcv/image/upload/images_ai/CASE_047.jpg", label: "" }
 ];
 
 let currentIndex = 0, readerId = '', responses = {}, zoomLevel = 1, pendingGrade = null;
-let aiMode = false;
-let eventLog = [];
-let toggleLog = []; // per-case toggle timestamps
-
-function ts(){ return new Date().toISOString(); }
-
-function logEvent(type, detail){
-  eventLog.push({ time: ts(), type: type, case: CASES[currentIndex] ? CASES[currentIndex].id : '', detail: detail });
-}
 
 document.getElementById('case-count-display').textContent = CASES.length;
 buildTicks();
@@ -443,118 +375,34 @@ function startStudy(){
   if(!v){document.getElementById('login-error').style.display='block';return;}
   readerId=v.toUpperCase();
   document.getElementById('header-reader-id').textContent=readerId;
-  logEvent('STUDY_START','Reader: '+readerId);
   showScreen('study-screen');
   loadCase(0);
-}
-
-function toggleAI(){
-  aiMode = !aiMode;
-  var c = CASES[currentIndex];
-  var img = document.getElementById('case-image');
-  var btn = document.getElementById('ai-toggle-btn');
-  var dot = document.getElementById('toggle-dot');
-  var txt = document.getElementById('ai-toggle-text');
-  var lbl = document.getElementById('ai-mode-label');
-
-  if(aiMode){
-    img.src = c.aiImageUrl;
-    btn.classList.add('ai-active');
-    txt.textContent = 'AI View';
-    lbl.className = 'ai-mode-label visible ai-on';
-    lbl.textContent = 'AI Assist ON';
-  } else {
-    img.src = c.imageUrl;
-    btn.classList.remove('ai-active');
-    txt.textContent = 'Standard View';
-    lbl.className = 'ai-mode-label visible standard';
-    lbl.textContent = 'Standard';
-  }
-  var toggleEntry = ts()+' (' + (aiMode?'Standard→AI':'AI→Standard') + ')';
-  toggleLog.push(toggleEntry);
-  logEvent('AI_TOGGLE', aiMode ? 'ON' : 'OFF');
 }
 
 function loadCase(idx){
   currentIndex=idx;
   var c=CASES[idx];
   document.getElementById('overlay-case-id').textContent=c.id;
-
-  // Reset AI mode on new case
-  aiMode = false;
-  toggleLog = [];
-  var btn = document.getElementById('ai-toggle-btn');
-  btn.classList.remove('ai-active');
-  document.getElementById('ai-toggle-text').textContent = 'Standard View';
-  var lbl = document.getElementById('ai-mode-label');
-  lbl.className = 'ai-mode-label standard';
-  lbl.textContent = 'Standard';
-
   var img=document.getElementById('case-image'), ph=document.getElementById('image-placeholder');
-  if(c.imageUrl){
-    img.src=c.imageUrl;
-    img.style.display='block';ph.style.display='none';zoomLevel=1;img.style.transform='scale(1)';
-  } else {
-    img.style.display='none';ph.style.display='flex';
-  }
-
+  if(c.imageUrl){img.src=c.imageUrl;img.style.display='block';ph.style.display='none';zoomLevel=1;img.style.transform='scale(1)';}
+  else{img.style.display='none';ph.style.display='flex';}
   var saved=responses[c.id];
   var sv=saved?saved.score:50;
   document.getElementById('risk-slider').value=sv;
   document.getElementById('notes-input').value=saved?(saved.notes||''):'';
   updateSlider(sv);
   setRespStatus(!!saved);
-
-  // Restore Likerts
-  restoreLikerts(saved);
-
-  var btn2=document.getElementById('btn-submit');
-  if(saved){btn2.classList.add('graded');btn2.textContent='Update Response';}
-  else{btn2.classList.remove('graded');btn2.textContent='Record Response';}
-
+  var btn=document.getElementById('btn-submit');
+  if(saved){btn.classList.add('graded');btn.textContent='Update Response';}
+  else{btn.classList.remove('graded');btn.textContent='Record Response';}
   updateProgress();
   document.getElementById('btn-prev').disabled=(idx===0);
   document.getElementById('btn-next').disabled=(idx>=CASES.length-1||!responses[c.id]);
-
-  logEvent('CASE_LOAD', c.id);
-}
-
-function restoreLikerts(saved){
-  // Clear all radio buttons
-  document.querySelectorAll('input[name=acceptance]').forEach(function(r){r.checked=false;});
-  document.querySelectorAll('input[name=trust]').forEach(function(r){r.checked=false;});
-  document.getElementById('acceptance-val').textContent='—';
-  document.getElementById('trust-val').textContent='—';
-
-  if(saved){
-    if(saved.acceptance){
-      var r=document.querySelector('input[name=acceptance][value="'+saved.acceptance+'"]');
-      if(r) r.checked=true;
-      document.getElementById('acceptance-val').textContent=saved.acceptance+'/5';
-    }
-    if(saved.trust){
-      var r2=document.querySelector('input[name=trust][value="'+saved.trust+'"]');
-      if(r2) r2.checked=true;
-      document.getElementById('trust-val').textContent=saved.trust+'/5';
-    }
-  }
-}
-
-function onLikertChange(scale, val){
-  if(scale==='acceptance'){
-    document.getElementById('acceptance-val').textContent=val+'/5';
-  } else {
-    document.getElementById('trust-val').textContent=val+'/5';
-  }
-  logEvent('LIKERT_'+scale.toUpperCase(), val);
 }
 
 function navigate(dir){
   var ni=currentIndex+dir;
-  if(ni>=0&&ni<CASES.length){
-    logEvent('NAVIGATE', dir>0?'NEXT':'PREV');
-    loadCase(ni);
-  }
+  if(ni>=0&&ni<CASES.length) loadCase(ni);
 }
 
 function setRespStatus(rec){
@@ -581,39 +429,17 @@ function attemptSubmit(){
   var c=CASES[currentIndex];
   var score=Math.round(parseInt(document.getElementById('risk-slider').value)/5)*5;
   var notes=document.getElementById('notes-input').value.trim();
-  var acceptance=document.querySelector('input[name=acceptance]:checked');
-  var trust=document.querySelector('input[name=trust]:checked');
-
-  if(responses[c.id]){
-    pendingGrade={caseId:c.id,score:score,notes:notes,
-      acceptance:acceptance?parseInt(acceptance.value):null,
-      trust:trust?parseInt(trust.value):null};
-    openModal('modal-overwrite');
-  } else {
-    commitGrade(c.id,score,notes,
-      acceptance?parseInt(acceptance.value):null,
-      trust?parseInt(trust.value):null);
-  }
+  if(responses[c.id]){pendingGrade={caseId:c.id,score:score,notes:notes};openModal('modal-overwrite');}
+  else{commitGrade(c.id,score,notes);}
 }
 
 function confirmOverwrite(){
   closeModal('modal-overwrite');
-  if(pendingGrade){
-    commitGrade(pendingGrade.caseId,pendingGrade.score,pendingGrade.notes,pendingGrade.acceptance,pendingGrade.trust);
-    pendingGrade=null;
-  }
+  if(pendingGrade){commitGrade(pendingGrade.caseId,pendingGrade.score,pendingGrade.notes);pendingGrade=null;}
 }
 
-function commitGrade(caseId,score,notes,acceptance,trust){
-  responses[caseId]={
-    score:score, notes:notes,
-    acceptance:acceptance, trust:trust,
-    aiModeAtSubmit: aiMode,
-    toggleHistory: toggleLog.slice(),
-    toggleCount: toggleLog.length,
-    timestamp:ts()
-  };
-  logEvent('RESPONSE_RECORDED','score:'+score+' acceptance:'+acceptance+' trust:'+trust+' aiMode:'+aiMode);
+function commitGrade(caseId,score,notes){
+  responses[caseId]={score:score,notes:notes,timestamp:new Date().toISOString()};
   setRespStatus(true);
   var btn=document.getElementById('btn-submit');
   btn.classList.add('graded');btn.textContent='Update Response';
@@ -626,7 +452,7 @@ function commitGrade(caseId,score,notes,acceptance,trust){
 }
 
 function updateProgress(){
-  var total=CASES.length,graded=Object.keys(responses).length,pct=Math.round((graded/total)*100);
+  var total=CASES.length, graded=Object.keys(responses).length, pct=Math.round((graded/total)*100);
   document.getElementById('progress-label').textContent='Case '+(currentIndex+1)+' of '+total+' | '+graded+'/'+total+' recorded';
   document.getElementById('progress-pct').textContent=pct+'%';
   document.getElementById('progress-fill').style.width=pct+'%';
@@ -636,21 +462,50 @@ function adjustZoom(d){zoomLevel=Math.max(.5,Math.min(3,zoomLevel+d));document.g
 function resetZoom(){zoomLevel=1;document.getElementById('case-image').style.transform='scale(1)';}
 
 function triggerSave(cb){
-  var overlay=document.getElementById('save-overlay'),bar=document.getElementById('save-bar'),lbl=document.getElementById('save-label');
-  overlay.classList.add('active');bar.style.width='0%';lbl.textContent='0%';
+  var overlay=document.getElementById('save-overlay'), bar=document.getElementById('save-bar'), lbl=document.getElementById('save-label');
+  overlay.classList.add('active');
+  bar.style.width='0%';lbl.textContent='0%';
   var pct=0;
   var iv=setInterval(function(){
     pct+=Math.random()*18+8;
     if(pct>=100){
-      pct=100;clearInterval(iv);bar.style.width='100%';lbl.textContent='100%';
-      setTimeout(function(){overlay.classList.remove('active');exportCSV(true);showToast('Responses saved successfully');if(cb)cb();},400);
-    } else {bar.style.width=pct+'%';lbl.textContent=Math.round(pct)+'%';}
+      pct=100;clearInterval(iv);
+      bar.style.width='100%';lbl.textContent='100%';
+      setTimeout(function(){
+        overlay.classList.remove('active');
+        exportCSV(true);
+        showToast('Responses saved successfully');
+        if(cb) cb();
+      },400);
+    } else {
+      bar.style.width=pct+'%';lbl.textContent=Math.round(pct)+'%';
+    }
   },80);
 }
 
 function triggerExit(){openModal('modal-exit');}
-function exitWithoutSave(){closeModal('modal-exit');setTimeout(function(){window.close();showScreen('login-screen');responses={};readerId='';showToast('Session ended');},200);}
-function saveAndExit(){closeModal('modal-exit');triggerSave(function(){setTimeout(function(){window.close();showScreen('login-screen');responses={};readerId='';showToast('Saved - you may close this tab');},600);});}
+
+function exitWithoutSave(){
+  closeModal('modal-exit');
+  setTimeout(function(){
+    window.close();
+    showScreen('login-screen');
+    responses={};readerId='';
+    showToast('Session ended - you may close this tab');
+  },200);
+}
+
+function saveAndExit(){
+  closeModal('modal-exit');
+  triggerSave(function(){
+    setTimeout(function(){
+      window.close();
+      showScreen('login-screen');
+      responses={};readerId='';
+      showToast('Saved - you may close this tab');
+    },600);
+  });
+}
 
 function showCompleteScreen(){
   var scores=Object.values(responses).map(function(r){return r.score;});
@@ -662,41 +517,24 @@ function showCompleteScreen(){
 }
 
 function exportCSV(silent){
-  // Response rows
   var rows=[
-    ['Study','ARGUS Reader Study'],
-    ['Reader ID',readerId],
-    ['Export Date',ts()],
-    ['Total Cases',CASES.length],
-    ['Cases Assessed',Object.keys(responses).length],
-    [],
-    ['Case ID','Likelihood Score (%)','Risk Category','Acceptance of AI (1-5)','Trust of AI (1-5)','AI Mode at Submit','Toggle Count','Toggle History','Feedback','Timestamp']
+    ['Study','Glaucomatous Visual Field Defect Reader Study'],
+    ['Reader ID',readerId],['Export Date',new Date().toISOString()],
+    ['Total Cases',CASES.length],['Cases Assessed',Object.keys(responses).length],
+    [],['Case ID','Likelihood Score (%)','Risk Category','Clinical Notes','Timestamp']
   ];
   CASES.forEach(function(c){
     var r=responses[c.id];
-    if(r){
-      var cat=r.score<=45?'Low':r.score<=69?'Moderate':'High';
-      rows.push([c.id,r.score,cat,r.acceptance||'',r.trust||'',r.aiModeAtSubmit?'AI':'Standard',r.toggleCount||0,(r.toggleHistory||[]).join(' | '),r.notes||'',r.timestamp]);
-    } else {
-      rows.push([c.id,'NOT ASSESSED','','','','','','','','']);
-    }
+    if(r){var cat=r.score<=45?'Low':r.score<=69?'Moderate':'High';rows.push([c.id,r.score,cat,r.notes||'',r.timestamp]);}
+    else{rows.push([c.id,'NOT ASSESSED','','','']);}
   });
-
-  // Event log rows
-  rows.push([]);
-  rows.push(['--- INTERACTION LOG ---']);
-  rows.push(['Timestamp','Event Type','Case','Detail']);
-  eventLog.forEach(function(e){
-    rows.push([e.time, e.type, e.case, e.detail]);
-  });
-
   var csv=rows.map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');
-  a.href=url;a.download='argus_study_'+readerId+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.href=url;a.download='vf_defect_reader_study_'+readerId+'_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();URL.revokeObjectURL(url);
-  if(!silent)showToast('CSV downloaded');
+  if(!silent) showToast('CSV downloaded');
 }
 
 function openModal(id){document.getElementById(id).classList.add('active');}
