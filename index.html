@@ -25,22 +25,22 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 #login-screen{height:100vh;width:100vw;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;overflow-y:auto;}
 .login-box{width:100%;max-width:460px;border:1px solid var(--border-bright);background:var(--surface);padding:48px 40px;position:relative;animation:fadeUp .5s ease both;}
 .login-box::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
-.study-badge{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:8px;}
-.study-badge::before{content:'';width:20px;height:1px;background:var(--accent);}
-.login-title{font-family:var(--serif);font-size:26px;font-weight:300;line-height:1.25;margin-bottom:4px;color:var(--accent);}
+.study-badge{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.study-badge::before{content:'';width:20px;height:1px;background:var(--accent);}.study-badge::after{content:'';width:20px;height:1px;background:var(--accent);}
+.login-title{font-family:var(--serif);font-size:26px;font-weight:300;line-height:1.25;margin-bottom:4px;color:var(--accent);text-align:center;}
 .login-title em{font-style:italic;color:var(--accent);}
-.login-task{font-size:13px;color:var(--text);margin-bottom:6px;font-weight:400;}
-.consent-link{display:block;background:rgba(74,240,196,0.08);border:1px solid var(--accent-mid);padding:12px 16px;margin-bottom:20px;font-size:11px;color:var(--text-muted);line-height:1.6;text-decoration:none;}
+.login-task{font-size:17px;color:var(--text);margin-bottom:24px;font-weight:400;text-align:center;}
+.consent-link{display:block;background:rgba(74,240,196,0.08);border:1px solid var(--accent-mid);padding:12px 16px;margin-bottom:20px;font-size:11px;color:var(--text-muted);line-height:1.6;text-decoration:none;text-align:justify;}
 .consent-link strong{color:var(--accent);display:block;margin-bottom:3px;}
 .consent-link:hover{background:rgba(74,240,196,0.14);border-color:var(--accent);}
-.login-subtitle{color:var(--text-muted);font-size:11px;line-height:1.6;margin-bottom:24px;}
+.login-subtitle{color:var(--text-muted);font-size:11px;line-height:1.6;margin-bottom:24px;text-align:justify;}
 .field-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;display:block;}
 .field-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:14px;padding:12px 16px;outline:none;transition:border-color .2s;margin-bottom:16px;}
 .field-input:focus{border-color:var(--accent);}
 .btn-primary{width:100%;background:var(--accent);color:#000;border:none;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:14px 24px;cursor:pointer;transition:all .2s;}
 .btn-primary:hover{background:#fff;transform:translateY(-1px);}
 .login-error{color:var(--danger);font-size:11px;margin-top:10px;display:none;}
-.login-meta{margin-top:24px;padding-top:20px;border-top:1px solid var(--border);color:var(--text-muted);font-size:11px;line-height:1.7;}
+.login-meta{margin-top:24px;padding-top:20px;border-top:1px solid var(--border);color:var(--text-muted);font-size:11px;line-height:1.7;text-align:justify;}
 .login-meta a{color:var(--accent);text-decoration:none;}
 
 /* ── SESSION TABS ── */
@@ -220,17 +220,17 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
   <div class="login-box">
     <div class="study-badge">Reader Study &middot; Ophthalmology</div>
     <h1 class="login-title"><em>ARGUS</em></h1>
-    <p class="login-task">Likelihood of Glaucomatous Visual Field Defect</p>
+    <p class="login-task">AI-based Report for Glaucoma Detection: User-centered Study</p>
 
-    <a class="consent-link" href="https://forms.cloud.microsoft/r/daPYEdenPD" target="_blank">
+    <a class="consent-link" href="https://redcapdemo.vumc.org/surveys/?s=H7JLKDWXK77LCTJH" target="_blank">
       <strong>&#128196; Consent Form — Please read before continuing</strong>
-      Please read and complete the following consent form to participate in the study. Your time would be greatly appreciated and you should know what you are committing to.
+      Please read and complete the following consent form to participate in the study. Your time would be greatly appreciated.
     </a>
 
-    <p class="login-subtitle">A reader study evaluating the likelihood of glaucomatous visual field defect (GVFD) from optical coherence tomography (OCT)-based reports. Each case presents one image for independent assessment. Please use your allocated reader ID / username.</p>
+    <p class="login-subtitle">A reader study evaluating the likelihood of glaucomatous visual field defect (GVFD) from optical coherence tomography (OCT)-based reports. Each case presents one image for independent assessment. Please use your allocated Reader ID.</p>
 
-    <label class="field-label" for="reader-id">Reader ID / Username</label>
-    <input class="field-input" type="text" id="reader-id" placeholder="e.g. DR_SMITH or R04" autocomplete="off">
+    <label class="field-label" for="reader-id">Reader ID</label>
+    <input class="field-input" type="text" id="reader-id" placeholder="e.g. ARGUS001" autocomplete="off">
 
     <label class="field-label" for="study-password">Study Password</label>
     <input class="field-input" type="password" id="study-password" placeholder="Enter study password" autocomplete="off" style="margin-bottom:20px;">
@@ -239,9 +239,8 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
     <div class="login-error" id="login-error">Please enter a valid Reader ID and password to continue.</div>
 
     <div class="login-meta">
-      Responses are stored in your browser session. Use <strong>Save</strong> at any time to download a CSV backup.<br>
-      This study contains <strong id="case-count-display">0</strong> cases across 3 sessions.<br><br>
-      Contact: <a href="/cdn-cgi/l/email-protection#c0b9b3a3a1aeb4aca9aea7eda2a9b2a3a880a3a5b2a1eeafb2a7eea1b5">Dr Y Scantling-Birch (<span class="__cf_email__" data-cfemail="671e14040609130b0e09004a050e15040f270402150649081500490612">[email&#160;protected]</span>)</a>
+      Responses are stored in your browser session. Use <strong>Save</strong> at any time to download a CSV backup. This study contains <strong id="case-count-display">0</strong> cases across 3 sessions.<br><br><div style="text-align:center;">For more information, contact below:</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;color:var(--accent);font-size:10px;letter-spacing:.2em;text-transform:uppercase;"><span style="width:20px;height:1px;background:var(--accent);display:inline-block;"></span>📧 <a href="mailto:yscantling-birch@cera.org.au" style="color:var(--accent);text-decoration:none;letter-spacing:.2em;">Dr Y Scantling-Birch</a><span style="width:20px;height:1px;background:var(--accent);display:inline-block;"></span></div>
     </div>
   </div>
 </div>
