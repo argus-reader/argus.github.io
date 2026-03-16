@@ -240,7 +240,7 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
 
     <div class="login-meta">
       Responses are stored in your browser session. Use <strong>Save</strong> at any time to download a CSV backup. This study contains <strong id="case-count-display">0</strong> cases across 3 sessions.<br><br><div style="text-align:center;">For more information, contact below:</div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;color:var(--accent);font-size:10px;letter-spacing:.2em;text-transform:uppercase;"><span style="width:20px;height:1px;background:var(--accent);display:inline-block;"></span>📧 <a href="mailto:yscantling-birch@cera.org.au" style="color:var(--accent);text-decoration:none;letter-spacing:.2em;">Dr Y Scantling-Birch</a><span style="width:20px;height:1px;background:var(--accent);display:inline-block;"></span></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;color:var(--accent);font-size:10px;letter-spacing:.2em;text-transform:uppercase;"><span style="width:20px;height:1px;background:var(--accent);display:inline-block;"></span>📧 <a href="/cdn-cgi/l/email-protection#3d444e5e5c53495154535a105f544f5e557d5e584f5c13524f5a135c48" style="color:var(--accent);text-decoration:none;letter-spacing:.2em;">Dr Y Scantling-Birch</a><span style="width:20px;height:1px;background:var(--accent);display:inline-block;"></span></div>
     </div>
   </div>
 </div>
@@ -455,7 +455,7 @@ input[type=range].risk-slider::-moz-range-thumb{width:18px;height:18px;backgroun
 
 <div class="toast" id="toast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── PASSWORD (hashed) ──────────────────────────────────────
 // SHA-256 of 'CERArgus2026!$%'
 const PASSWORD_HASH = '1a2b263203e40872f03cff92a645d0fd7ebf1525255cec9a5891a8d17f13643a';
@@ -790,9 +790,11 @@ function commitGrade(caseId,score,notes,acceptance,trust){
 
 async function submitToREDCap(caseId, score, category, notes, acceptance, trust, rec){
   var record = [{
-    record_id:          '',
-    redcap_event_name:  REDCAP_EVENTS[currentSession],
-    reader_id:          readerId,
+    record_id:              '',
+    redcap_event_name:      REDCAP_EVENTS[currentSession],
+    redcap_repeat_instrument: 'argus_ss1',
+    redcap_repeat_instance: 'new',
+    reader_id:              readerId,
     session:            currentSession,
     case_id:            caseId,
     likelihood_score:   String(score),
@@ -907,7 +909,4 @@ function openModal(id){ document.getElementById(id).classList.add('active'); }
 function closeModal(id){ document.getElementById(id).classList.remove('active'); }
 function showScreen(id){ document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');}); document.getElementById(id).classList.add('active'); }
 var toastTimer;
-function showToast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove('show');},2500); }
-</script>
-</body>
-</html>
+function showToast(msg){ var t=document.getElementById('toast'); t.textC
